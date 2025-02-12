@@ -1,0 +1,47 @@
+# data/fasttext.vec
+# data/glove.6B.300d.txt
+# data/GoogleNews-vectors-negative300.bin
+# tf_env/
+# best_model.h5/
+
+
+# # I want now to train using a different dataset which is amazon and then i will compare it with the result of the paper using othe dataset but i still need 
+# # I have use single channel and multi channel i want to compare there performance
+
+# Model files
+best_model.h5
+*.h5
+*.ckpt
+
+# Dataset files (exclude all Amazon_reviews)
+data/Amazon_reviews/
+data/*.tgz
+data/*.csv
+data/fasttext.vec
+data/glove.6B.300d.txt
+data/GoogleNews-vectors-negative300.bin
+
+
+# Python cache and logs
+__pycache__/
+*.log
+*.out
+
+# Virtual environment and TensorFlow libraries
+venv/
+env/
+tf_env/
+tf_env/lib/python3.10/site-packages/tensorflow/libtensorflow_cc.so.2.dylib
+
+# Results and generated plots
+*.png
+training_results_*.png
+
+# TensorFlow checkpoints and temp files
+checkpoint
+*.tfevents.*
+
+# Ignore .DS_Store and other common system files
+.DS_Store
+Thumbs.db
+
