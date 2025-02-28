@@ -123,9 +123,6 @@ plt.show()
 print(f"Min review length after removal: {df_cleaned['review_length'].min()}")
 print(f"Max review length after removal: {df_cleaned['review_length'].max()}")
 
-
-
-
 # Train-test split
 train_df, test_df = train_test_split(df_cleaned, test_size=0.2, stratify=df_cleaned["sentiment"], random_state=42)
 print(f"Training set size: {train_df.shape[0]}")
