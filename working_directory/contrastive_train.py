@@ -18,18 +18,23 @@ from sklearn.model_selection import train_test_split
 
 from utils.data_helpers import load_data_and_labels, load_embedding_matrix
 from models.siamese_text_cnn import SiameseEncoder, SiameseTextCNN
-from models.train_contrastive import create_contrastive_pairs, prepare_siamese_data
+from models.contrastive_utils import create_contrastive_pairs, prepare_siamese_data
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--embedding_type", type=str, default="word2vec", 
                     choices=["word2vec", "glove", "fasttext", "multi"],
                     help="Which embedding to use?")
 parser.add_argument("--batch_size", type=int, default=64)
-parser.add_argument("--num_epochs", type=int, default=300)
+parser.add_argument("--num_epochs", type=int, default=10)
 parser.add_argument("--max_pairs", type=int, default=50000, help="How many pairs to create")
 parser.add_argument("--debug", action="store_true", help="Run on a small subset of the data for debugging")
 
 args = parser.parse_args()
+
+# ⚙️ Override max_pairs if in debug mode
+if args.debug:
+    print("Debug mode: reducing max_pairs to 10000 for faster training.")
+    args.max_pairs = 10000
 
 def main():
     # 1) Load raw data
@@ -159,11 +164,24 @@ def main():
     plt.close()
     print(f"Saved confusion matrix plot to {cm_filename}")
 
-    # Print final metrics
-    print("Training completed.")
+    # ✅ Final metrics printed for record_contrastive_results.py
     print("Final training accuracy:", history.history['accuracy'][-1])
     if 'val_accuracy' in history.history:
         print("Final validation accuracy:", history.history['val_accuracy'][-1])
+
+    from sklearn.metrics import f1_score
+    f1 = f1_score(valY, val_predictions)
+    print("Final F1 Score:", f1)
+
+
+    # At the end of contrastive_train.py, after training is done
+    print("Final training accuracy: {:.4f}".format(history.history['accuracy'][-1]))
+    if 'val_accuracy' in history.history:
+        print("Final validation accuracy: {:.4f}".format(history.history['val_accuracy'][-1]))
+
+    from sklearn.metrics import f1_score
+    f1 = f1_score(valY, val_predictions)
+    print("Final F1 Score: {:.4f}".format(f1))
 
 if __name__ == "__main__":
     main()

@@ -1,83 +1,5 @@
-# import tensorflow as tf
-# from tensorflow.keras import layers
-
-# class TextCNN(tf.keras.Model):
-#     def __init__(self, sequence_length, num_classes, vocab_size, 
-#                  embedding_size, filter_sizes, num_filters,
-#                  embedding_matrices=None, trainable_embedding=True, multi_channel=False):
-#         super(TextCNN, self).__init__()
-
-#         self.multi_channel = multi_channel
-
-#         if multi_channel:
-#             self.embeddings = []
-#             for emb_matrix in embedding_matrices:
-#                 embedding_layer = tf.keras.layers.Embedding(
-#                     input_dim=vocab_size,
-#                     output_dim=embedding_size,
-#                     weights=[emb_matrix] if emb_matrix is not None else None,
-#                     trainable=trainable_embedding
-#                 )
-#                 self.embeddings.append(embedding_layer)
-#         else:
-#             self.embedding = tf.keras.layers.Embedding(
-#                 input_dim=vocab_size,
-#                 output_dim=embedding_size,
-#                 weights=[embedding_matrices[0]] if embedding_matrices is not None else None,
-#                 trainable=trainable_embedding
-#             )
-        
-#         # Add Spatial Dropout here (applies to embeddings)
-#         self.embedding_dropout = tf.keras.layers.SpatialDropout1D(0.3)
-
-#         self.conv_layers = []
-#         self.batch_norm_layers = []
-#         self.pool_layers = []
-
-#         for filter_size in filter_sizes:
-#             conv_layer = tf.keras.layers.Conv1D(
-#                 filters=num_filters,
-#                 kernel_size=filter_size,
-#                 padding='valid',
-#                 activation=None
-#             )
-#             self.conv_layers.append(conv_layer)
-#             self.batch_norm_layers.append(tf.keras.layers.BatchNormalization())
-#             self.pool_layers.append(tf.keras.layers.GlobalMaxPooling1D())
-
-#         self.dropout = tf.keras.layers.Dropout(rate=0.7)
-#         self.dense = tf.keras.layers.Dense(
-#             1,  # Change num_classes to 1
-#             activation="sigmoid",  # Change activation to sigmoid
-#             kernel_regularizer=tf.keras.regularizers.l2(0.03)
-#         )
-
-
-#     def call(self, x, training=False):
-#         if self.multi_channel:
-#             embedded_outputs = [embedding(x) for embedding in self.embeddings]
-#             x = tf.concat(embedded_outputs, axis=-1)
-#         else:
-#             x = self.embedding(x)
-        
-#         # Apply Spatial Dropout here
-#         x = self.embedding_dropout(x, training=training)
-
-#         pooled_outputs = []
-#         for conv, bn, pool in zip(self.conv_layers, self.batch_norm_layers, self.pool_layers):
-#             conv_out = conv(x)
-#             conv_out = bn(conv_out, training=training)
-#             conv_out = tf.nn.relu(conv_out)
-#             pooled = pool(conv_out)
-#             pooled_outputs.append(pooled)
-
-#         x_concat = tf.concat(pooled_outputs, axis=1)
-#         x_drop = self.dropout(x_concat, training=training)
-#         return self.dense(x_drop)
-
-
-
-
+# this is a baseline TextCNN
+import numpy as np
 import tensorflow as tf
 from tensorflow.keras import layers
 
@@ -229,3 +151,33 @@ class TextCNN(tf.keras.Model):
 
 
 
+if __name__ == '__main__':
+    # Create a dummy input tensor: e.g., a batch of 1 sample with sequence length 100.
+    dummy_input = tf.zeros((1, 100), dtype=tf.int32)
+    
+    # Set parameters for the model.
+    vocab_size = 50000
+    embedding_size = 300
+    
+    # Create a dummy embedding matrix (random values in the typical range)
+    dummy_embedding_matrix = np.random.uniform(-0.25, 0.25, (vocab_size, embedding_size))
+    
+    # Instantiate the TextCNN model for a single-channel setup.
+    model = TextCNN(
+        sequence_length=100,
+        num_classes=1,
+        vocab_size=vocab_size,
+        embedding_size=embedding_size,
+        embedding_matrices=[dummy_embedding_matrix],
+        filter_sizes=[3, 4, 5],
+        num_filters=75,
+        multi_channel=False,
+        pooling_type="global_max",
+        k_max=1
+    )
+    
+    # Run the dummy input through the model
+    output = model(dummy_input, training=False)
+    
+    # Print the model's output
+    print("TextCNN output:", output.numpy())

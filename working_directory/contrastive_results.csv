@@ -1,0 +1,5 @@
+Embedding Type,Train Accuracy,Validation Accuracy,F1 Score
+word2vec,0.9688,0.719,0.742
+glove,0.9379,0.7,0.7018
+fasttext,0.9611,0.668,0.664
+multi,0.975,0.673,0.6828

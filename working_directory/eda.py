@@ -1,3 +1,4 @@
+# eda.py
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -20,6 +21,20 @@ nltk.download('punkt')
 dataset_path = "../data/Amazon_reviews/train.csv"
 df = pd.read_csv(dataset_path)
 
+print("columns names")
+print(df.columns)
+
+# Sentiment distribution
+sentiment_counts = df["sentiment"].value_counts()
+labels = ["Negative", "Positive"]
+colors = ["#ff9999", "#66b3ff"]
+
+plt.figure(figsize=(6, 6))
+plt.pie(sentiment_counts, labels=labels, autopct='%1.1f%%', startangle=140, colors=colors)
+plt.title("Distribution of Sentiment in Reviews")
+plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.show()
+
 # Basic dataset info
 print("\n🔹 Dataset Loaded. Shape:", df.shape)
 print("\nFirst few rows:\n", df.head())
@@ -28,6 +43,28 @@ print("\nFirst few rows:\n", df.head())
 print("\n🔹 Checking for missing values...")
 missing_values = df.isnull().sum()
 print(missing_values)
+
+
+
+
+# Calculate missing values per column
+missing_values = df.isnull().sum()
+
+# Set up a figure
+plt.figure(figsize=(6, 4))
+
+# Create a bar plot
+sns.barplot(x=missing_values.index, y=missing_values.values, color='skyblue')
+
+# Add labels and title
+plt.xlabel('Columns')
+plt.ylabel('Number of Missing Values')
+plt.title('Missing Values in Each Column')
+plt.xticks(rotation=45)  # Rotate column names if needed
+
+# Display the plot
+plt.tight_layout()
+plt.show()
 
 # Handling Duplicates
 print("\n🔹 Checking for duplicate rows...")

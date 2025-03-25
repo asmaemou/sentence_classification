@@ -1,0 +1,5 @@
+Embedding Type,Accuracy,F1 Score
+word2vec,0.86,0.9582
+glove,0.849,0.9345
+fasttext,0.8635,0.9546
+multi,0.861,0.9699

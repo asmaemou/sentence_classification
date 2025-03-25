@@ -1,8 +1,10 @@
+#data_helpers.py
 import numpy as np
 import pandas as pd
 import gensim
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+import argparse
 
 def clean_str(string: str, lower=True) -> str:
     """
@@ -79,3 +81,30 @@ def load_embedding_matrix(tokenizer, embedding_type="word2vec", embedding_dim=30
 
     print(f"Loaded {len(embedding_index)} word vectors from {embedding_type}.")
     return embedding_matrix
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--embedding_type", type=str, default="word2vec",
+                        choices=["word2vec", "glove", "fasttext"],
+                        help="Which embedding type to load for testing.")
+    args = parser.parse_args()
+
+    dataset_path = "../../data/Amazon_reviews/train_cleaned.csv"
+    x_text, y = load_data_and_labels(dataset_path, lower=True)
+    print("Loaded", len(x_text), "reviews.")
+    print("Sample reviews:")
+    for i, review in enumerate(x_text[:5]):
+        print(f"Review {i+1}: {review}")
+    print("Corresponding sentiment labels:", y[:5])
+
+    tokenizer = Tokenizer(num_words=50000)
+    tokenizer.fit_on_texts(x_text)
+    print("Tokenizer vocabulary size:", len(tokenizer.word_index))
+
+    # Use the embedding type from command line
+    embedding_matrix = load_embedding_matrix(tokenizer,
+                                             embedding_type=args.embedding_type,
+                                             embedding_dim=300)
+    print("Embedding matrix shape:", embedding_matrix.shape)
+

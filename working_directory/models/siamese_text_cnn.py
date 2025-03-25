@@ -1,11 +1,9 @@
-# models/siamese_text_cnn.py
+# siamese_text_cnn.py
 
 import tensorflow as tf
 from tensorflow.keras import layers
 import numpy as np
 
-# Re-use your existing layers: KMaxPooling, AttentionLayer if needed
-# or keep it simpler for the Siamese version.
 
 class SiameseEncoder(tf.keras.Model):
     """
@@ -158,4 +156,38 @@ def build(self, input_shape):
     # Fix similarity_dense input shape
     self.similarity_dense.build((None, single_input_shape[-1]))  
 
+if __name__ == '__main__':
+    # Create a dummy input (e.g., a batch of one sample with a sequence length of 100)
+    dummy_input = tf.zeros((1, 100), dtype=tf.int32)
+    # For Siamese, we need a pair of inputs
+    dummy_pair = (dummy_input, dummy_input)
+    
+    # Assume vocabulary size = 50000, embedding_size = 300, and we use a single embedding (e.g., word2vec)
+    vocab_size = 50000
+    embedding_size = 300
+    # Create a dummy embedding matrix: normally you load real pre-trained embeddings
+    dummy_embedding_matrix = np.random.uniform(-0.25, 0.25, (vocab_size, embedding_size))
+    
+    # Instantiate the encoder using a single-channel approach
+    encoder = SiameseEncoder(
+        vocab_size=vocab_size,
+        embedding_size=embedding_size,
+        embedding_matrices=[dummy_embedding_matrix],
+        filter_sizes=[3, 4, 5],
+        num_filters=75,
+        multi_channel=False,
+        pooling_type="global_max"
+    )
+    
+    # Build the Siamese model
+    model = SiameseTextCNN(encoder)
+    
+    # Run the dummy input through the model
+    sim_score = model(dummy_pair, training=False)
+    
+    # Print the similarity score
+    print("Similarity score for the dummy pair:", sim_score.numpy())
 
+"""
+This block will create some dummy inputs, run them through the model, and print the intermediate output shapes along with the final similarity score. 
+"""

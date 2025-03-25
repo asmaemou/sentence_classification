@@ -1,3 +1,4 @@
+# train.py
 import argparse
 import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
@@ -15,7 +16,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--embedding_type", type=str, default="word2vec", choices=["word2vec", "glove", "fasttext", "multi"],
                     help="Choose embedding type or multi-channel mode")
 parser.add_argument("--batch_size", type=int, default=64, help="Batch size")
-parser.add_argument("--num_epochs", type=int, default=600, help="Number of epochs")
+parser.add_argument("--num_epochs", type=int, default=5, help="Number of epochs")
 parser.add_argument("--debug", action="store_true", help="Run on a small subset of the data for debugging")
 # New arguments for pooling configuration
 parser.add_argument("--pooling_type", type=str, default="global_max", choices=["global_max", "k_max"],
