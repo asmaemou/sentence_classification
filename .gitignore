@@ -1,8 +1,4 @@
-# data/fasttext.vec
-# data/glove.6B.300d.txt
-# data/GoogleNews-vectors-negative300.bin
-# tf_env/
-# best_model.h5/
+
 
 
 # # I want now to train using a different dataset which is amazon and then i will compare it with the result of the paper using othe dataset but i still need 
