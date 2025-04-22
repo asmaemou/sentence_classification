@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
 import joblib
-from sklearn.feature_extraction.text import TfidfVectorizer
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
@@ -23,7 +22,7 @@ y_test = test_df["sentiment"]
 X_train.fillna("", inplace=True)
 X_test.fillna("", inplace=True)
 
-# Load the TF-IDF vectorizer (already fitted during preprocessing)
+# Load the TF-IDF vectorizer 
 vectorizer = joblib.load("./models/tfidf_vectorizer.pkl")
 
 # Transform the text data into TF-IDF features

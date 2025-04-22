@@ -13,13 +13,13 @@ import joblib
 figures_dir = "./preprocessed_data"
 os.makedirs(figures_dir, exist_ok=True)
 
-# Load the cleaned dataset (after EDA)
+# Load the cleaned dataset 
 df = pd.read_csv("../data/Amazon_reviews/train_cleaned.csv")
 
-# Handle missing values in the 'clean_review' column (fill NaNs with empty strings)
+# Handle missing values in the 'clean_review' column
 df["clean_review"].fillna("", inplace=True)
 
-# Handle missing values in 'review_title' column (fill with an empty string or placeholder)
+# Handle missing values in 'review_title' column
 df["review_title"].fillna("No title", inplace=True)
 
 # Handle outliers based on review_length
@@ -47,8 +47,8 @@ stop_words = set(stopwords.words('english'))
 
 def clean_text(text):
     text = str(text).lower()  # Lowercase the text
-    text = re.sub(r'\W', ' ', text)  # Remove special characters
-    text = re.sub(r'\s+', ' ', text).strip()  # Remove extra spaces
+    text = re.sub(r'\W', ' ', text)  # Removing special characters
+    text = re.sub(r'\s+', ' ', text).strip()  # Removing extra spaces
     words = word_tokenize(text)
     words = [word for word in words if word not in stop_words]
     return ' '.join(words)
@@ -68,20 +68,15 @@ cleaned_review_length_dist_path = os.path.join(figures_dir, "cleaned_review_leng
 plt.savefig(cleaned_review_length_dist_path)
 plt.close()
 
-# Save the cleaned data to a new file
+# Saving the cleaned data to a new file
 train_cleaned_path = "../data/Amazon_reviews/train_cleaned_final.csv"
 test_cleaned_path = "../data/Amazon_reviews/test_cleaned_final.csv"
 
-# Split the cleaned data into training and test sets
+# Splitting the cleaned data into training and test sets
 train_df, test_df = train_test_split(df_cleaned, test_size=0.2, stratify=df_cleaned["sentiment"], random_state=42)
 
-# Save cleaned train and test data
+# Saving cleaned train and test data
 train_df.to_csv(train_cleaned_path, index=False)
 test_df.to_csv(test_cleaned_path, index=False)
 
-# Check if files exist
-print("Checking if files exist:")
-print("Train file exists:", os.path.exists(train_cleaned_path))
-print("Test file exists:", os.path.exists(test_cleaned_path))
-
-print("\n Data preprocessing completed successfully!")
+print("\n Data preprocessing completed successfully")

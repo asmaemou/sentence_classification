@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 import joblib
 import os
 
-# Create the models directory if it doesn't exist
+# Create the models directory 
 os.makedirs("./models", exist_ok=True)
 
 # Load the preprocessed dataset
@@ -20,7 +20,7 @@ y_train = train_df["sentiment"]
 X_test = test_df["clean_review"]
 y_test = test_df["sentiment"]
 
-# Optionally, sample a smaller subset (e.g., 10% of the data)
+# sample a smaller subset  10% of the data
 train_df_subset = train_df.sample(frac=0.1, random_state=42)
 test_df_subset = test_df.sample(frac=0.1, random_state=42)
 
@@ -106,4 +106,4 @@ evaluate_model(rf_model, X_test_tfidf, y_test, "Random Forest (Test Set)")
 evaluate_model(dt_model, X_test_tfidf, y_test, "Decision Tree (Test Set)")
 evaluate_model(xgb_model, X_test_tfidf, y_test, "XGBoost (Test Set)")
 
-print("\n Model training and evaluation completed successfully!")
+print("\n Model training and evaluation completed successfully")

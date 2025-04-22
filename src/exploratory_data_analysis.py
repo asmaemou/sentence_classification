@@ -8,7 +8,7 @@ import os
 dataset_path = "../data/Amazon_reviews/train.csv"
 df = pd.read_csv(dataset_path)
 
-# Create a directory to save the figures inside 'src'
+# here i am creating a directory to save the figures inside 'src'
 figures_dir = "./figures"
 os.makedirs(figures_dir, exist_ok=True)
 
@@ -20,27 +20,26 @@ colors = ["#ff9999", "#66b3ff"]
 plt.figure(figsize=(6, 6))
 plt.pie(sentiment_counts, labels=labels, autopct='%1.1f%%', startangle=140, colors=colors)
 plt.title("Distribution of Sentiment in Reviews")
-plt.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+plt.axis('equal') 
 sentiment_plot_path = os.path.join(figures_dir, "sentiment_distribution.png")
 plt.savefig(sentiment_plot_path)
 plt.close()
 
-# Basic dataset info
-print("\n🔹 Dataset Loaded. Shape:", df.shape)
+# Basic dataset informations
+print("\n Dataset Loaded. Shape:", df.shape)
 print("\nFirst few rows:\n", df.head())
 
 # Checking Missing Values
-print("\n🔹 Checking for missing values...")
+print("\n Checking for missing values...")
 missing_values = df.isnull().sum()
 print(missing_values)
 
 # Calculate missing values per column
 missing_values = df.isnull().sum()
 
-# Set up a figure for missing values
 plt.figure(figsize=(6, 4))
 
-# Create a bar plot
+# Creation of a bar plot
 sns.barplot(x=missing_values.index, y=missing_values.values, color='skyblue')
 
 # Add labels and title
@@ -55,7 +54,7 @@ plt.savefig(missing_values_plot_path)
 plt.close()
 
 # Handling Duplicates
-print("\n🔹 Checking for duplicate rows...")
+print("\n Checking for duplicate rows...")
 duplicates = df.duplicated().sum()
 print(f"Number of Duplicate Rows: {duplicates}")
 
@@ -89,12 +88,4 @@ outlier_boxplot_path = os.path.join(figures_dir, "outlier_boxplot.png")
 plt.savefig(outlier_boxplot_path)
 plt.close()
 
-# Box plot after outlier removal (Will be handled in preprocessing.py)
-
-# Most Frequent Words Analysis (This will be handled in preprocessing.py)
-
-# Save the cleaned dataset for future preprocessing (optional, in case we want to use it later)
-# df_cleaned_path = "../data/Amazon_reviews/df_cleaned_for_preprocessing.csv"
-# df.to_csv(df_cleaned_path, index=False)
-
-print("\n🚀 EDA Completed Successfully!")
+print("\n EDA Completed Successfully!")
