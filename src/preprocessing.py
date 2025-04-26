@@ -1,82 +1,78 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
-from sklearn.model_selection import train_test_split
+import re
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-import re
-import joblib
 
-# Create a directory to save the figures for preprocessing
+# 0) Create output directory for figures
 figures_dir = "./preprocessed_data"
 os.makedirs(figures_dir, exist_ok=True)
 
-# Load the cleaned dataset 
-df = pd.read_csv("../data/Amazon_reviews/train_cleaned.csv")
+# 1) Load the raw datasets
+train_raw = pd.read_csv("../data/Amazon_reviews/train.csv")
+test_raw  = pd.read_csv("../data/Amazon_reviews/test.csv")
 
-# Handle missing values in the 'clean_review' column
-df["clean_review"].fillna("", inplace=True)
+# 2) Fill missing values & compute review_length on both
+for df in (train_raw, test_raw):
+    df["review_text"].fillna("", inplace=True)
+    df["review_title"].fillna("No title", inplace=True)
+    df["review_length"] = df["review_text"].apply(lambda x: len(str(x).split()))
 
-# Handle missing values in 'review_title' column
-df["review_title"].fillna("No title", inplace=True)
-
-# Handle outliers based on review_length
-Q1 = df["review_length"].quantile(0.25)
-Q3 = df["review_length"].quantile(0.75)
+# 3) Compute IQR bounds from the training set and remove outliers there
+Q1 = train_raw["review_length"].quantile(0.25)
+Q3 = train_raw["review_length"].quantile(0.75)
 IQR = Q3 - Q1
 lower_bound = Q1 - 1.5 * IQR
 upper_bound = Q3 + 1.5 * IQR
 
-# Remove outliers based on review length
-df_cleaned = df[(df["review_length"] >= lower_bound) & (df["review_length"] <= upper_bound)]
-print(f"Dataset size after removing outliers: {df_cleaned.shape[0]}")
+train_cleaned = train_raw[
+    (train_raw["review_length"] >= lower_bound) &
+    (train_raw["review_length"] <= upper_bound)
+]
+# Apply same bounds to test set:
+test_cleaned = test_raw[
+    (test_raw["review_length"] >= lower_bound) &
+    (test_raw["review_length"] <= upper_bound)
+]
 
-# Visualize the outlier distribution after removal
-plt.figure(figsize=(10, 5))
-sns.boxplot(x=df_cleaned["review_length"])
-plt.title("Box Plot of Review Lengths (After Outlier Removal)")
+print(f"Train: before {train_raw.shape[0]}, after {train_cleaned.shape[0]} rows")
+print(f"Test:  before {test_raw.shape[0]}, after {test_cleaned.shape[0]} rows")
+
+# 4) Visualize box plot for train after outlier removal
+plt.figure(figsize=(10,5))
+sns.boxplot(x=train_cleaned["review_length"])
+plt.title("Review Lengths After Outlier Removal (Train)")
 plt.xlabel("Number of Words")
-after_outlier_removal_path = os.path.join(figures_dir, "after_outlier_removal.png")
-plt.savefig(after_outlier_removal_path)
+plt.savefig(os.path.join(figures_dir, "after_outlier_removal_train.png"))
 plt.close()
 
-# Text cleaning function
+# 5) Define text‐cleaning function
 stop_words = set(stopwords.words('english'))
-
 def clean_text(text):
-    text = str(text).lower()  # Lowercase the text
-    text = re.sub(r'\W', ' ', text)  # Removing special characters
-    text = re.sub(r'\s+', ' ', text).strip()  # Removing extra spaces
-    words = word_tokenize(text)
-    words = [word for word in words if word not in stop_words]
-    return ' '.join(words)
+    text = str(text).lower()
+    text = re.sub(r'\W', ' ', text)
+    text = re.sub(r'\s+', ' ', text).strip()
+    tokens = word_tokenize(text)
+    return ' '.join([t for t in tokens if t not in stop_words])
 
-# Clean the review_text column
-df_cleaned["clean_review"] = df_cleaned["review_text"].apply(clean_text)
+# 6) Apply cleaning to create `clean_review` and compute its length
+for df in (train_cleaned, test_cleaned):
+    df["clean_review"] = df["review_text"].apply(clean_text)
+    df["clean_review_length"] = df["clean_review"].apply(lambda x: len(x.split()))
 
-# Visualize the distribution of cleaned review lengths
-df_cleaned["clean_review_length"] = df_cleaned["clean_review"].apply(lambda x: len(str(x).split()))
-
-plt.figure(figsize=(8, 5))
-sns.histplot(df_cleaned["clean_review_length"], bins=50, kde=True)
-plt.title("Cleaned Review Length Distribution")
+# 7) Visualize cleaned‐review length distribution (Train)
+plt.figure(figsize=(8,5))
+sns.histplot(train_cleaned["clean_review_length"], bins=50, kde=True)
+plt.title("Cleaned Review Length Distribution (Train)")
 plt.xlabel("Number of Words")
 plt.ylabel("Count")
-cleaned_review_length_dist_path = os.path.join(figures_dir, "cleaned_review_length_distribution.png")
-plt.savefig(cleaned_review_length_dist_path)
+plt.savefig(os.path.join(figures_dir, "cleaned_review_length_dist_train.png"))
 plt.close()
 
-# Saving the cleaned data to a new file
-train_cleaned_path = "../data/Amazon_reviews/train_cleaned_final.csv"
-test_cleaned_path = "../data/Amazon_reviews/test_cleaned_final.csv"
+# 8) Save cleaned datasets
+train_cleaned.to_csv("../data/Amazon_reviews/train_cleaned_final.csv", index=False)
+test_cleaned.to_csv("../data/Amazon_reviews/test_cleaned_final.csv", index=False)
 
-# Splitting the cleaned data into training and test sets
-train_df, test_df = train_test_split(df_cleaned, test_size=0.2, stratify=df_cleaned["sentiment"], random_state=42)
-
-# Saving cleaned train and test data
-train_df.to_csv(train_cleaned_path, index=False)
-test_df.to_csv(test_cleaned_path, index=False)
-
-print("\n Data preprocessing completed successfully")
+print("\nData preprocessing completed successfully")

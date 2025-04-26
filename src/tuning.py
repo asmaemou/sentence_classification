@@ -121,9 +121,9 @@ print(f"Best Parameters for XGBoost: {xgb_random_search.best_params_}")
 print(f"Best Score for XGBoost: {xgb_random_search.best_score_:.4f}")
 
 # Save the best models from tuning
-joblib.dump(rf_random_search.best_estimator_, "./models/random_forest_best_model.pkl")
-joblib.dump(dt_random_search.best_estimator_, "./models/decision_tree_best_model.pkl")
-joblib.dump(xgb_random_search.best_estimator_, "./models/xgboost_best_model.pkl")
+joblib.dump(rf_random_search.best_estimator_, "./models/random_forest_tuned.pkl")
+joblib.dump(dt_random_search.best_estimator_, "./models/decision_tree_tuned.pkl")
+joblib.dump(xgb_random_search.best_estimator_, "./models/xgboost_tuned.pkl")
 
 # Function for evaluating models on the test set
 def evaluate_model(model, X_test, y_test, model_name):
@@ -134,9 +134,9 @@ def evaluate_model(model, X_test, y_test, model_name):
     print(classification_report(y_test, y_pred))
 
 # Load the best models from tuning
-rf_best_model = joblib.load("./models/random_forest_best_model.pkl")
-dt_best_model = joblib.load("./models/decision_tree_best_model.pkl")
-xgb_best_model = joblib.load("./models/xgboost_best_model.pkl")
+rf_best_model = joblib.load("./models/random_forest_tuned.pkl")
+dt_best_model = joblib.load("./models/decision_tree_tuned.pkl")
+xgb_best_model = joblib.load("./models/xgboost_tuned.pkl")
 
 # Evaluate the models
 evaluate_model(rf_best_model, X_test_tfidf, y_test, "Random Forest")

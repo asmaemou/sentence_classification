@@ -1,8 +1,30 @@
-
-
-
-# # I want now to train using a different dataset which is amazon and then i will compare it with the result of the paper using othe dataset but i still need 
-# # I have use single channel and multi channel i want to compare there performance
+# ┌─────────────────────────────────────────────────────────────────────────────
+# │  Project Workflow
+# │
+# │  1️⃣  EDA (Explore raw data)
+# │      $ python eda.py
+# │      - Loads data/train.csv & data/test.csv
+# │      - Generates distribution, missing-value & outlier plots under ./figures
+# │
+# │  2️⃣  Preprocessing (Clean & split)
+# │      $ python preprocessing.py
+# │      - Reads raw train.csv & test.csv
+# │      - Fills nulls, removes outliers, cleans text
+# │      - Saves cleaned CSVs as train_cleaned_final.csv & test_cleaned_final.csv
+# │      - Outputs intermediate plots under ./preprocessed_data
+# │
+# │  3️⃣  Modeling (Train & tune)
+# │      $ python modeling.py
+# │      - Loads cleaned train/test CSVs
+# │      - Vectorizes (TF-IDF), runs RandomizedSearchCV, cross-val, stacking
+# │      - Saves final models under ./models and the vectorizer
+# │
+# │  4️⃣  Evaluation (Test & visualize)
+# │      $ python evaluation.py
+# │      - Loads cleaned test CSV & saved models
+# │      - Computes accuracy, precision, recall, F1, and confusion matrices
+# │      - Saves confusion plots under ./confusion_matrices
+# └─────────────────────────────────────────────────────────────────────────────
 
 # Model files
 best_model.h5
@@ -40,4 +62,4 @@ checkpoint
 # Ignore .DS_Store and other common system files
 .DS_Store
 Thumbs.db
-
+/src/models/
