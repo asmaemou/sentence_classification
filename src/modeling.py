@@ -174,8 +174,8 @@ import joblib
 import os
 
 # ——— CONFIGURATION —————————————
-SUBSAMPLE_FRAC = 0.1    # use 10% of data for a quick smoke-test
-RF_ITERS     = 10       # fewer iterations for quick test
+SUBSAMPLE_FRAC = 0.1    
+RF_ITERS     = 10       
 DT_ITERS     = 5
 XGB_ITERS    = 5
 
