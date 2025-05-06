@@ -39,7 +39,7 @@ def evaluate_model(model, X, y_true, name):
     rec  = recall_score(y_true, y_pred, average="macro")
     f1   = f1_score(y_true, y_pred, average="macro")
 
-    # --- print to console ---
+    # --- print ---
     print(f"\n=== {name} ===")
     print(f"Accuracy (overall)     : {acc:.4f}")
     print(f"Precision (macro avg.) : {prec:.4f}")

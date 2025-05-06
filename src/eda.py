@@ -46,7 +46,7 @@ sns.barplot(x=missing_values.index, y=missing_values.values, color='skyblue')
 plt.xlabel('Columns')
 plt.ylabel('Number of Missing Values')
 plt.title('Missing Values in Each Column')
-plt.xticks(rotation=45)  # Rotate column names if needed
+plt.xticks(rotation=45)  # Rotate column names
 
 # Save the missing values plot
 missing_values_plot_path = os.path.join(figures_dir, "missing_values.png")
